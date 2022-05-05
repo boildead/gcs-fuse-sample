@@ -1,5 +1,5 @@
-FROM debian:stretch-slim
-ENV GCSFUSE_REPO gcsfuse-stretch
+FROM debian:buster-slim
+ENV GCSFUSE_REPO buster-stretch
 
 RUN apt-get update && apt-get install --yes --no-install-recommends \
     ca-certificates \

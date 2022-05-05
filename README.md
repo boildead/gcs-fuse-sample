@@ -4,6 +4,8 @@ This directory contains a sample deployment using Google Cloud Storage as a mult
 
 The deployment file contains the required configuration for a container to start with a Google Cloud Storage bucket mounted in a given path.
 
+The big catch is that for this to work, the container has to be built with `gcsfuse`. The `Dockerfile` includes a base build for debian buster.
+
 The most note worthy parts of the configuration are the following:
 
 ```yaml
@@ -25,9 +27,10 @@ lifecycle:
     exec:
       command: ["fusermount", "-u", "/mnt/test-bucket"]
 ```
-As no real Kubernetes volumes are really involved, the whole thing can be implemented by using `lifecycle` directives, a `postStart` will mount the `gcsfuse` volume and a `preStop` will unmount it.
 
-The big catch is that for this to work, the container has to be built with `gcsfuse`. The `Dockerfile` includes a base build for debian jessie.
+Do not forget that you need [authentication](https://github.com/GoogleCloudPlatform/gcsfuse/blob/master/docs/mounting.md#credentials).
+
+As no real Kubernetes volumes are really involved, the whole thing can be implemented by using `lifecycle` directives, a `postStart` will mount the `gcsfuse` volume and a `preStop` will unmount it.
 
 Unfortunately as the `gcsfuse` does not sync the files, it is not possible to share the file system with other containers in the pod via a `volumes[].emptyDir.{}` directive.
 
